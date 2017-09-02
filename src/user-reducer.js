@@ -4,27 +4,36 @@ var initialState = {
   error: null
 }
 
-export default (state = initialState,action) => {
+export default (state = (JSON.parse(localStorage.getItem('user')) || initialState),action) => {
   console.log(action);
+  let newState;
   switch(action.type){
-    case 'USER_FETCH':
-      return {
+    case 'USER_FETCH':{
+      newState =  {
         loading: true,
         data: null,
         error: null
       }
-    case 'USER_FULLFILED':
-      return {
+      break;
+    }
+    case 'USER_FULLFILED':{
+      newState =  {
         loading: false,
         data: action.payload,
         error:null
       }
-    case 'USER_FAILED':
-      return {
+      break;
+    }
+    case 'USER_FAILED':{
+      newState =  {
         loading: false,
         data: null,
         error:action.error
       }
+      break;
+    }
     default: return state;
   }
+  localStorage.setItem("repos", JSON.stringify(newState));
+  return newState;
 }

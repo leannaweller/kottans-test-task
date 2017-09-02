@@ -3,6 +3,7 @@ import Header from './Header.jsx';
 import Repos from './Repos.jsx';
 import Profile from './Profile.jsx';
 import Filter from './Filter.jsx';
+import Progress from './Progress.jsx';
 import {connect} from 'preact-redux';
 import {getUser,getRepos} from '../actions';
 import './App.less';
@@ -16,27 +17,28 @@ class App extends Component {
       return (
         <div>
           <Header/>
-          <main>
-            <Profile/>
-            <div className="container">
-              <Filter/>
-              {
-                repos.data ?
+          {
+            (user.data && repos.data) ?
+            <main>
+              <Profile user={user.data}/>
+              <div className="container">
+                <Filter/>
                 <Repos repos={repos.data}/>
-                :
-                <div>No data</div>
-              }
-            </div>
-          </main>
+              </div>
+            </main>
+            :
+            <Progress/>
+          }
         </div>
       );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state,props) => {
   return {
     user: state.user,
-    repos: state.repos
+    repos: state.repos,
+    progress: state.progress
   }
 }
 

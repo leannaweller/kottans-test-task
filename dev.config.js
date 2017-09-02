@@ -1,4 +1,5 @@
 const path = require('path');
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
     //input
@@ -7,8 +8,17 @@ module.exports = {
     //output
     output: {
         path: path.join(__dirname, 'build'),
-        filename: 'bundle.js'
+        filename: './build/bundle.gz.js'
     },
+    plugins: [
+      new CompressionPlugin({
+        asset: "[path].gz[query]",
+        algorithm: "gzip",
+        test: /\.(js|html)$/,
+        threshold: 10240,
+        minRatio: 0.8
+      }),
+    ],
 
     //transformations
     module: {
@@ -32,6 +42,10 @@ module.exports = {
                 { loader: "autoprefixer-loader" },
                 { loader: "less-loader" }
               ]
+            },
+            {
+              test: /\.json$/,
+              loader: 'json-loader'
             }
 
         ]

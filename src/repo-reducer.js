@@ -4,26 +4,38 @@ var initialState = {
   error: null
 }
 
-export default (state = initialState,action) => {
+export default (state = (JSON.parse(localStorage.getItem('repos')) || initialState),action) => {
+  let newState;
   switch(action.type){
-    case 'REPO_FETCH':
-      return {
+    case 'REPO_FETCH': {
+      newState =  {
         loading: true,
         data: null,
         error: null
       }
-    case 'REPO_FULLFILED':
-      return {
+      break;
+    }
+
+    case 'REPO_FULLFILED':{
+      newState =  {
         loading: false,
         data: action.payload,
         error:null
       }
-    case 'REPO_FAILED':
-      return {
+      break;
+    }
+
+    case 'REPO_FAILED':{
+      newState =  {
         loading: false,
         data: null,
         error:action.error
       }
-    default: return state;
+      break;
+    }
+
+    default: newState = state;
   }
+  localStorage.setItem("repos", JSON.stringify(newState));
+  return newState;
 }

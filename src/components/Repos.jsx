@@ -6,7 +6,7 @@ class Repos extends Component {
   render({repos}) {
       return (
         <div class="repos">
-          {repos.map(repo=><Repo/>)}
+          {repos.map(repo=><Repo repo={repo}/>)}
         </div>
       );
   }

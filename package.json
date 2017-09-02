@@ -5,16 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha ./**/*spec.js --require babel-polyfill --compilers js:babel-register --timeout 15000",
-    "build": "webpack",
-    "devserver": "webpack-dev-server --inline"
+    "build": "webpack -p --config prod.config.js ",
+    "devserver": "webpack-dev-server --inline --config dev.config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "compression-webpack-plugin": "^1.0.0",
+    "dedupe-plugin": "^1.0.0",
     "expect": "^1.20.2",
     "js-cache": "^1.0.2",
     "less": "^2.7.2",
     "mocha": "^3.5.0",
+    "moment": "^2.18.1",
     "preact": "^8.2.4",
     "preact-dom": "^1.0.1",
     "preact-redux": "^2.0.2",
@@ -36,6 +39,7 @@
     "eslint-plugin-react": "^7.3.0",
     "expect.js": "^0.3.1",
     "isomorphic-fetch": "^2.2.1",
+    "json-loader": "^0.5.7",
     "less-loader": "^4.0.5",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.5",
