@@ -2,3 +2,6 @@ node_modules
 public/bundle.js
 npm-debug.log
 src
+*.config.js
+.babelrc
+.package.json
