@@ -1,34 +1,43 @@
 import { h, Component } from 'preact';
 import Header from './Header.jsx';
-import Repos from './Repos.jsx';
-import Profile from './Profile.jsx';
-import Filter from './Filter.jsx';
-import Progress from './Progress.jsx';
+import Main from './Main.jsx';
+import Home from './Home.jsx';
+import Error from './Error.jsx';
+import NotFound from './NotFound.jsx';
+import {Router,route} from 'preact-router';
 import {connect} from 'preact-redux';
-import {getUser,getRepos} from '../actions';
+import {getUser,getRepos,resetProgress} from '../actions';
 import './App.less';
 
 class App extends Component {
-  componentDidMount(){
-    this.props.getUser('leannaweller',{page:1,per_page:10});
-    this.props.getRepos('leannaweller',{page:1,per_page:10});
+  constructor(props){
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.getUser = this.getUser.bind(this);
   }
-  render({user,repos}) {
+  getUser(name){
+    this.props.resetProgress();
+    this.props.getUser(name,{page:1,per_page:10});
+    this.props.getRepos(name,{page:1,per_page:10});
+  }
+  handleSubmit(name){
+    route("/"+encodeURI(name));
+  }
+  render({user,repos,progress}) {
       return (
         <div>
-          <Header/>
-          {
-            (user.data && repos.data) ?
-            <main>
-              <Profile user={user.data}/>
-              <div className="container">
-                <Filter/>
-                <Repos repos={repos.data}/>
-              </div>
-            </main>
-            :
-            <Progress/>
-          }
+          <Header handleSubmit={this.handleSubmit} opacity={1} color={'white'}/>
+          <Router>
+            <Main
+              path="/:profile"
+              getUser={this.getUser}
+              user={user}
+              repos={repos}
+              progress={progress}/>
+            <Home handleSubmit={this.handleSubmit} opacity={0.1} color={'black'} path="/"/>
+            <NotFound default/>
+            <Error path="/error"/>
+          </Router>
         </div>
       );
   }
@@ -45,8 +54,9 @@ const mapStateToProps = (state,props) => {
 const mapDispatchtoProps = (dispatch) => {
   return {
     getUser: (user,options) => dispatch(getUser(user,options)),
-    getRepos: (user,options) => dispatch(getRepos(user,options))
+    getRepos: (user,options) => dispatch(getRepos(user,options)),
+    resetProgress: () => dispatch(resetProgress())
   }
 }
 
-export default  connect(mapStateToProps,mapDispatchtoProps)(App);
+export default connect(mapStateToProps,mapDispatchtoProps)(App);

@@ -1,5 +1,5 @@
 import cache from 'js-cache';
-
+import {route} from 'preact-router';
 
 const timeout =  60000;
 
@@ -10,9 +10,10 @@ let getRepos = function(user,{page,per_page}){
     let url =  `https://api.github.com/users/${user}/repos?page=${page}&per_page=${per_page}`;
     dispatch({type:'SET_REPOS_PROGRESS',payload:0});
     dispatch({type:'REPO_FETCH'});
+    let response;
     if(!cache.get(url)){
       try {
-        let response = await fetch(url);
+        response = await fetch(url);
         dispatch({type:'SET_REPOS_PROGRESS',payload:10});
         if(response.ok){
           let data = await response.json();
@@ -39,11 +40,12 @@ let getRepos = function(user,{page,per_page}){
           cache.set(url, data, timeout);
         }else{
           throw new Error(response.statusText);
-          dispatch({type:'SET_REPOS_PROGRESS',payload:0});
-          dispatch({type:'REPO_FAILED',error:response.statusText});
         }
       } catch (e) {
         console.error(e);
+        dispatch({type:'SET_REPOS_PROGRESS',payload:0});
+        dispatch({type:'SET_REPOS_ERROR',error:response.statusText});
+        route("/error");
         return;
       }
     }
@@ -69,9 +71,10 @@ let getUser = function(user){
           throw new Error(response.statusText);
         }
       } catch (e) {
-        console.err(e);
-        dispatch({type:'USER_FAILED',error:response.statusText});
+        console.error(e);
+        dispatch({type:'SET_USER_ERROR',error:response.statusText});
         dispatch({type:'SET_USER_PROGRESS',payload:0});
+        route("/error");
         return;
       }
     }
@@ -112,6 +115,12 @@ let getRepo = function(owner,repo){
   }
 };
 
+let resetProgress = () => {
+  return (dispatch) => {
+    dispatch({type:'RESET_PROGRESS'});
+  }
+}
 
 
-export {getUser,getRepos,getRepo};
+
+export {getUser,getRepos,getRepo,resetProgress};

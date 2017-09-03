@@ -2,18 +2,18 @@ import { h,  Component } from 'preact';
 import Octocat from '../dummy/Octocat.jsx';
 import Search from './Search.jsx';
 import './Header.less';
+import {route} from 'preact-router';
 class Header extends Component {
+  constructor(props){
+    super(props);
 
+  }
   render(props,{name}){
     return(
-      <header>
-        <nav>
-          <a href="/">
-            <Octocat/>
-          </a>
-          <Search opacity={props.opacity} color={props.color} handleSubmit = {props.handleSubmit}/>
-        </nav>
-      </header>
+      <main>
+        This is home!!!
+        <Search opacity={props.opacity} color={props.color} handleSubmit = {props.handleSubmit}/>
+      </main>
   );
   }
 
