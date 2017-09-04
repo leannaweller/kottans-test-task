@@ -1,0 +1,15 @@
+#!/bin/sh
+#branch=$(git rev-parse --abbrev-ref HEAD);
+#echo $branch;
+#if ["$branch" = 'lalaa']; then
+  #  echo "Build started"
+#fi
+
+#exit 0
+
+Sourcesystem=$(git rev-parse --abbrev-ref HEAD);
+echo $Sourcesystem;
+if [ "$Sourcesystem" = "source" ]; then 
+    echo "Sourcesystem Matched" 
+    echo "Sourcesystem is NOT Matched $Sourcesystem"  
+fi;
