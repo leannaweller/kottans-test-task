@@ -12,7 +12,7 @@ class Search extends Component {
       return(
         <div class="search">
             <form class="search-form" >
-              <input type="text" placeholder="Search repositories..."
+              <input type="text" placeholder="Search users or organizations..."
                 onChange = {(e)=>this.setState({name:e.target.value})}
                 style={{backgroundColor:bgc,
                 color:props.color}}/>

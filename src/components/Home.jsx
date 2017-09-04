@@ -1,7 +1,7 @@
 import { h,  Component } from 'preact';
 import Octocat from '../dummy/Octocat.jsx';
 import Search from './Search.jsx';
-import './Header.less';
+import './Home.less';
 import {route} from 'preact-router';
 class Header extends Component {
   constructor(props){
@@ -11,8 +11,10 @@ class Header extends Component {
   render(props,{name}){
     return(
       <main>
-        This is home!!!
-        <Search opacity={props.opacity} color={props.color} handleSubmit = {props.handleSubmit}/>
+        <div className="home-content">
+          <h3 class="epic-text">Enter user name or organization and enjoy!</h3>
+          <Search opacity={props.opacity} color={props.color} handleSubmit = {props.handleSubmit}/>
+        </div>
       </main>
   );
   }

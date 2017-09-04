@@ -21,11 +21,11 @@ class Repo extends Component {
           <div class="repo-card" onClick={()=>{this.setState({isOpen:true})}}>
             <div class="repo-card__title"><a href="">{repo.name}</a></div>
               {
-                repo.fork && <div>
-                  fork
+                repo.fork && <div className="repo-fork">
+                  <i class="ion-fork-repo"></i>
                 </div>
               }
-              <div>stars: {utils.roundStars(repo.stargazers_count)}</div>
+              <div><i class="ion-ios-star"></i>{utils.roundStars(repo.stargazers_count)}</div>
               <div>Updated: {moment(new Date(repo.updated_at)).fromNow()}</div>
             <div>
               {repo.description}
