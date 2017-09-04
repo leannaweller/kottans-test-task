@@ -5,7 +5,7 @@ import Profile from './Profile.jsx';
 import Filter from './Filter.jsx';
 import Progress from './Progress.jsx';
 
-import './App.less';
+import './Main.less';
 
 class Main extends Component {
   componentDidMount(){
