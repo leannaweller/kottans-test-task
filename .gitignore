@@ -4,4 +4,4 @@ npm-debug.log
 src
 *.config.js
 .babelrc
-.package.json
+package.json
