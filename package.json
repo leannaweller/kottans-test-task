@@ -12,7 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "compression-webpack-plugin": "^1.0.0",
-    "dedupe-plugin": "^1.0.0",
     "expect": "^1.20.2",
     "js-cache": "^1.0.2",
     "less": "^2.7.2",
