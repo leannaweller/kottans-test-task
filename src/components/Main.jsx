@@ -26,6 +26,7 @@ class Main extends Component {
               <div className="container">
                 <Filter/>
                 <Repos repos={repos.data}/>
+                <button className="btn-submit">Load more...</button>
               </div>
             </main>
             :
