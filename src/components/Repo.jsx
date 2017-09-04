@@ -1,8 +1,9 @@
 import { h, Component } from 'preact';
-import './Repo.less';
 import colors from '../colors.json';
 import Modal from './Modal.jsx';
 import moment from 'moment';
+import * as utils from '../utils';
+import './Repo.less';
 
 class Repo extends Component {
   constructor(props){
@@ -24,9 +25,7 @@ class Repo extends Component {
                   fork
                 </div>
               }
-              {
-                (repo.stargazers_count > 0) && <div>{repo.stargazers_count}</div>
-              }
+              <div>stars: {utils.roundStars(repo.stargazers_count)}</div>
               <div>Updated: {moment(new Date(repo.updated_at)).fromNow()}</div>
             <div>
               {repo.description}

@@ -1,5 +1,6 @@
 import cache from 'js-cache';
-import {route} from 'preact-router';
+import * as utils from './utils';
+
 
 const timeout =  60000;
 
@@ -22,7 +23,7 @@ let getRepos = function(user,{page,per_page}){
             if(repo.languages_url){
               promises.push(fetch(repo.languages_url));
             }else{
-              throw new Error();
+              throw new Error(utils.createErrorMsg(response));
             }
           }
           let results = await Promise.all(promises);
@@ -39,13 +40,13 @@ let getRepos = function(user,{page,per_page}){
           dispatch({type:'REPO_FULLFILED',payload:data});
           cache.set(url, data, timeout);
         }else{
-          throw new Error(response.statusText);
+          throw new Error(utils.createErrorMsg(response));
         }
       } catch (e) {
         console.error(e);
         dispatch({type:'SET_REPOS_PROGRESS',payload:0});
-        dispatch({type:'SET_REPOS_ERROR',error:response.statusText});
-        route("/error");
+        dispatch({type:'SET_REPOS_ERROR',error:utils.createErrorMsg(response,e)});
+        utils.routeTo("/error");
         return;
       }
     }
@@ -58,9 +59,10 @@ let getUser = function(user){
     dispatch({type:'USER_FETCH'});
     dispatch({type:'SET_USER_PROGRESS',payload:0});
     let url = `https://api.github.com/users/${user}`;
+    let response;
     if(!cache.get(url)){
       try {
-        let response = await fetch(url);
+        response = await fetch(url);
         if(response.ok){
           dispatch({type:'SET_USER_PROGRESS',payload:50});
           let data = await response.json();
@@ -68,13 +70,13 @@ let getUser = function(user){
           cache.set(url, data, timeout);
           dispatch({type:'SET_USER_PROGRESS',payload:100});
         }else{
-          throw new Error(response.statusText);
+          throw new Error(utils.createErrorMsg(response));
         }
       } catch (e) {
         console.error(e);
-        dispatch({type:'SET_USER_ERROR',error:response.statusText});
+        dispatch({type:'SET_USER_ERROR',error:utils.createErrorMsg(response,e)});
         dispatch({type:'SET_USER_PROGRESS',payload:0});
-        route("/error");
+        utils.routeTo("/error");
         return;
       }
     }
