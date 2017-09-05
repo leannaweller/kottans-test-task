@@ -5,9 +5,12 @@ import './Filter.less';
 const Filter = ({ children,...props }) => {
     return(
       <div class="filter">
-        <input class="name-filter" type="text" placeholder="Search repositories..."/>
-        <Select langs={['C','C++','C#','Pyton','Java']}/>
-        <Select langs={['C','C++','C#','Pyton','Java']}/>
+        <form action="">
+          <input class="name-filter" type="text" placeholder="Search repositories..."/>
+          <Select name={'language'} params={['C','C++','C#','Pyton','Java']}/>
+          <Select name={'type'} params={['All','Forks','Sources']}/>
+          <button className="btn-submit" type="submit">Apply</button>
+        </form>
       </div>
   );
 }

@@ -1,5 +1,7 @@
 var initialState = {
-  data: null
+  data: null,
+  filter:{},
+  sorting:{}
 }
 
 export default (state = (JSON.parse(localStorage.getItem('repos')) || initialState),action) => {

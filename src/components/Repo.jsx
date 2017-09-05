@@ -31,7 +31,9 @@ class Repo extends Component {
               {repo.description}
             </div>
             <div class="repo-card__lang-info">
-              <span style={style} class='repo-card__lang-color'></span>
+              {
+                langs[0] && <span style={style} class='repo-card__lang-color'></span>
+              }
               {
                 langs[0] && <span class='repo-card__lang-text'>{langs[0]}</span>
               }

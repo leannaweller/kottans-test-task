@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import classNames from 'classnames'
 import './Select.less';
 
 class Select extends Component {
@@ -9,18 +10,21 @@ class Select extends Component {
         param:'All'
       }
     }
-    render({langs},{open,param}){
-      // let _langs = [...langs,'All'];
+    render({params,name},{open,param}){
+      console.log('render',this.state,this.props)
+      let _params = name=='language' ? [...params,'All'] : params;
       return(
         <div className="select_wrapper">
-          <button className="select_control" onClick={()=>this.setState({open:!open})}>
-            <i>Language:</i> <input value={param}
-              onChange={(e)=>{this.setState({param:e.target.value}); console.log('Changed')}} type="text"/>
+          <div className="select_control" onClick={()=>this.setState({open:!open})}>
+            <i>{name}:</i> <input value={param}
+              onChange={(e)=>this.setState({param:e.target.value})} type="text"/>
             <i className="ion-arrow-down-b"></i>
-          </button>
+          </div>
           <div class="select-list" style={{display: (open ? 'block' : 'none')}}>
             <ul>
-              {langs.map(lang=><li onClick={()=>this.setState({param:lang,open:false})}>{lang}</li>)}
+              {_params.map(lang=><li className={classNames({'active':lang==param})}
+                onClick={()=>this.setState({param:lang,open:false})}>
+              {lang}</li>)}
             </ul>
           </div>
         </div>
