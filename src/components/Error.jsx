@@ -4,7 +4,7 @@ class Error extends Component {
   render({repos}) {
       return (
         <div class="repos">
-          Error
+          <h3>Error</h3>
         </div>
       );
   }
