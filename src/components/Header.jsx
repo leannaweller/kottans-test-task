@@ -1,6 +1,6 @@
 import { h,  Component } from 'preact';
 import Octocat from '../dummy/Octocat.jsx';
-import Search from './Search.jsx';
+import Search from './helper/Search.jsx';
 import './Header.less';
 class Header extends Component {
 

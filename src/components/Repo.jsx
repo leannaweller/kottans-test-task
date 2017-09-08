@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import colors from '../colors.json';
-import Modal from './Modal.jsx';
+import Modal from './helper/Modal.jsx';
 import moment from 'moment';
 import * as utils from '../utils';
 import './Repo.less';

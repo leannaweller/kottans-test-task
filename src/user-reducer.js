@@ -12,8 +12,14 @@ export default (state = (JSON.parse(localStorage.getItem('user')) || initialStat
       }
       break;
     }
+    case 'USER_FETCH':{
+      newState =  {
+        data: null,
+      }
+      break;
+    }
     default: return state;
   }
-  localStorage.setItem("repos", JSON.stringify(newState));
+  localStorage.setItem("user", JSON.stringify(newState));
   return newState;
 }

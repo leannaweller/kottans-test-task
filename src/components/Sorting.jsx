@@ -1,11 +1,14 @@
 import { h,  Component } from 'preact';
+import ComplicatedRadio from './helper/ComplicatedRadio.jsx';
 import './Sorting.less';
+
 class Sorting extends Component {
 
-  render(props,{name}){
+  render(props,state){
     return(
-      <div>
-        ha ha sorting
+      <div class="sorting">
+        <ComplicatedRadio name={"sortType"} params={['issues','stars','name','updated']}/>
+        <ComplicatedRadio name={"order"} params={['ascending','descending']}/>
       </div>
     );
   }

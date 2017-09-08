@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import * as utils from '../utils';
+import * as utils from '../../utils';
 import './Profile.less';
 
 const Profile = ({ children,...props }) => {
