@@ -1,6 +1,6 @@
 import { h,  Component } from 'preact';
 import Octocat from '../dummy/Octocat.jsx';
-import Search from './Search.jsx';
+import Search from './helper/Search.jsx';
 import './Home.less';
 import {route} from 'preact-router';
 class Header extends Component {

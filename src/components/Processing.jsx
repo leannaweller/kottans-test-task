@@ -7,8 +7,11 @@ class Processing extends Component {
   render(props,{name}){
     return(
       <div className="processing">
-        <Filter/>
-        <Sorting/>
+        <form action="">
+          <Filter/>
+          <Sorting/>
+          <button className="btn-submit" type="submit">Apply</button>
+        </form>
       </div>
     );
   }

@@ -2,8 +2,8 @@ import { h, Component } from 'preact';
 import Header from './Header.jsx';
 import Main from './Main.jsx';
 import Home from './Home.jsx';
-import Error from './Error.jsx';
-import NotFound from './NotFound.jsx';
+import Error from './helper/Error.jsx';
+import NotFound from './helper/NotFound.jsx';
 import {Router,route} from 'preact-router';
 import {connect} from 'preact-redux';
 import {getUser,getRepos,resetProgress} from '../actions';
@@ -13,12 +13,15 @@ class App extends Component {
   constructor(props){
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getUser = this.getUser.bind(this);
+    this.getUserData = this.getUserData.bind(this);
   }
-  getUser(name){
+  getChildContext() {
+    return {per_page: 10};
+  }
+  getUserData(name){
     this.props.resetProgress();
-    this.props.getUser(name,{page:1,per_page:10});
-    this.props.getRepos(name,{page:1,per_page:10});
+    this.props.getUser(name,{page:1,per_page:this.context.per_page});
+    this.props.getRepos(name,{page:1,per_page:this.context.per_page});
   }
   handleSubmit(name){
     route("/"+encodeURI(name));
@@ -30,7 +33,8 @@ class App extends Component {
           <Router>
             <Main
               path="/:profile"
-              getUser={this.getUser}
+              getUserData={this.getUserData}
+              getRepos={this.props.getRepos}
               user={user}
               repos={repos}
               progress={progress}/>
