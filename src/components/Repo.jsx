@@ -1,7 +1,9 @@
 import { h, Component } from 'preact';
 import colors from '../colors.json';
 import Modal from './helper/Modal.jsx';
+import Progress from './helper/Progress.jsx';
 import moment from 'moment';
+import CustomPieChart from './helper/PieChart.jsx';
 import * as utils from '../utils';
 import './Repo.less';
 
@@ -11,15 +13,22 @@ class Repo extends Component {
     this.state = {
       isOpen: false
     }
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick(){
+    const {repo} = this.props;
+    this.setState({isOpen:true});
+    this.context.getRepo(repo.owner.login,repo.name)
   }
   render({repo},{isOpen}){
-    const langs = Object.keys(repo.languages_list);
-    const  color = colors[langs[0]] || 'white';
+    const {language:lang} = repo;
+    const  color = colors[lang] || 'white';
+    const {progress, repo:selected} = this.context;
     const style = {backgroundColor:color};
       return(
         <div className="repo-wrapper">
-          <div class="repo-card" onClick={()=>{this.setState({isOpen:true})}}>
-            <div class="repo-card__title"><a href="">{repo.name}</a></div>
+          <div class="repo-card" onClick={this.handleClick}>
+            <div class="repo-card__title"><a href={repo.html_url}>{repo.name}</a></div>
               {
                 repo.fork && <div className="repo-fork">
                   <i class="ion-fork-repo"></i>
@@ -32,14 +41,32 @@ class Repo extends Component {
             </div>
             <div class="repo-card__lang-info">
               {
-                langs[0] && <span style={style} class='repo-card__lang-color'></span>
+                lang && <span style={style} class='repo-card__lang-color'></span>
               }
               {
-                langs[0] && <span class='repo-card__lang-text'>{langs[0]}</span>
+                lang && <span class='repo-card__lang-text'>{repo.language}</span>
               }
             </div>
           </div>
-          <Modal open={isOpen} onClose={() => this.setState({isOpen:false})}/>
+          <Modal open={isOpen} onClose={() => this.setState({isOpen:false})}>
+            {
+              progress.loading ?
+              <Progress progress={progress}/>
+              :
+              <div>
+                <div className="piecharts">
+                  <div className="piechart-wrapper">
+                    <CustomPieChart
+                    data={selected.data ? selected.data.langs : []}/>
+                  </div>
+                  <div className="piechart-wrapper">
+                    <CustomPieChart
+                    data={selected.data ? selected.data.contributors.map(item => {return {key:item.login, value:item.contributions}}) : []}/>
+                  </div>
+                </div>
+              </div>
+            }
+          </Modal>
         </div>
     );
   }

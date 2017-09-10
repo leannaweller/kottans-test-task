@@ -43,10 +43,10 @@ class Main extends Component {
   }
   render({user,repos,progress,getRepos,profile}) {
       return (
-        <div className="main" >
+        <main>
           {
-            ((user.data && repos.data && (profile == user.data.login))) ?
-            <main>
+            (user.data && repos.data) ?
+            <div class="data">
               <Profile user={user.data}/>
               <div className="container">
                 <Processing/>
@@ -56,11 +56,11 @@ class Main extends Component {
                   <Progress progress={progress}/>
                 }
               </div>
-            </main>
+            </div>
             :
             <Progress type={"all"} progress={progress}/>
           }
-        </div>
+        </main>
       );
   }
 }

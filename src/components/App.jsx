@@ -6,7 +6,7 @@ import Error from './helper/Error.jsx';
 import NotFound from './helper/NotFound.jsx';
 import {Router,route} from 'preact-router';
 import {connect} from 'preact-redux';
-import {getUser,getRepos,resetProgress} from '../actions';
+import {getUser,getRepos,resetProgress,getRepo} from '../actions';
 import './App.less';
 
 class App extends Component {
@@ -16,7 +16,7 @@ class App extends Component {
     this.getUserData = this.getUserData.bind(this);
   }
   getChildContext() {
-    return {per_page: 10};
+    return {per_page: 10, ...this.props};
   }
   getUserData(name){
     this.props.resetProgress();
@@ -51,7 +51,8 @@ const mapStateToProps = (state,props) => {
   return {
     user: state.user,
     repos: state.repos,
-    progress: state.progress
+    progress: state.progress,
+    repo:state.repo
   }
 }
 
@@ -59,6 +60,7 @@ const mapDispatchtoProps = (dispatch) => {
   return {
     getUser: (user,options) => dispatch(getUser(user,options)),
     getRepos: (user,options) => dispatch(getRepos(user,options)),
+    getRepo: (user,repo) => dispatch(getRepo(user,repo)),
     resetProgress: () => dispatch(resetProgress())
   }
 }
