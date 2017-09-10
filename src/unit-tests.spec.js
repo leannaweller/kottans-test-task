@@ -28,7 +28,7 @@ describe('actions',  function() {
       var res = await getRepo('leannaweller','socket-chat')(dispatch);
       expect(res).to.be.an('object');
       if(typeof res === 'object'){
-        expect(res).to.have.keys(['private','fork','html_url','languages']);
+        expect(res).to.have.keys(['contributors','prs','langs']);
       }
   });
 });

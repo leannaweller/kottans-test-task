@@ -18,27 +18,10 @@ let getRepos = function(user,{page,per_page}){
         dispatch({type:'SET_PROGRESS',payload:10});
         if(response.ok){
           let data = await response.json();
-          let promises = [];
-          for(let repo of data){
-            if(repo.languages_url){
-              promises.push(fetch(repo.languages_url));
-            }else{
-              throw new Error(utils.createErrorMsg(response));
-            }
-          }
-          let results = await Promise.all(promises);
           dispatch({type:'SET_PROGRESS',payload:60});
-          promises = [];
-          for(let res of results){
-            promises.push(res.json())
-          }
-          results = await Promise.all(promises);
-          for(let i in results){
-             data[i].languages_list = results[i];
-          }
-          dispatch({type:'SET_PROGRESS',payload:100});
-          dispatch({type:'REPO_FULLFILED', payload:data, page});
           cache.set(url, data, timeout);
+          dispatch({type:'SET_PROGRESS',payload:100});
+          dispatch({type:'REPOS_FULLFILED', payload:data, page});
         }else{
           throw new Error(utils.createErrorMsg(response));
         }
@@ -60,13 +43,14 @@ let getUser = function(user){
     let url = `https://api.github.com/users/${user}`;
     let response;
     if(!cache.get(url)){
+
       try {
         response = await fetch(url);
         if(response.ok){
           dispatch({type:'SET_PROGRESS',payload:50});
           let data = await response.json();
-          dispatch({type:'USER_FULLFILED',payload:data});
           cache.set(url, data, timeout);
+          dispatch({type:'USER_FULLFILED',payload:data});
           dispatch({type:'SET_PROGRESS',payload:100});
         }else{
           throw new Error(utils.createErrorMsg(response));
@@ -85,29 +69,29 @@ let getUser = function(user){
 
 let getRepo = function(owner,repo){
   return async function(dispatch){
+    dispatch({type:'SET_PROGRESS',payload:0});
+    dispatch({type:'REPO_FETCH'});
     let url = `https://api.github.com/repos/${owner}/${repo}`;
+    const contributors_url = `https://api.github.com/repos/${owner}/${repo}/contributors?page=1&per_page=3`;
+    const prs_url=`https://api.github.com/repos/${owner}/${repo}/pulls?state=open&sort=popularity&direction=desc&per_page=5`;
+    const langs_url=`https://api.github.com/repos/${owner}/${repo}/languages??page=1&per_page=3`;
+    let data = {};
     if(!cache.get(url)){
-      let data = null;
       try {
-        let response = await fetch(url);
-        if(response.ok){
-          data = await response.json();
-          if(data.languages_url){
-              response = await fetch(data.languages_url);
-              if(response.ok){
-                data.languages = await response.json();
-                cache.set(url, data, timeout);
-              }else{
-                throw new Error(response.statusText);
-              }
-          }else{
-            throw new Error();
-          }
-        }else{
-          throw new Error(response.statusText);
-        }
+        const promises = [fetch(contributors_url),fetch(prs_url),fetch(langs_url)];
+        const results = await Promise.all(promises);
+        dispatch({type:'SET_PROGRESS',payload:50});
+        const total_res = await Promise.all(results.map(res => res.json()));
+        data.contributors = total_res[0];
+        data.prs = total_res[1];
+        data.langs = utils.getPairsArray(total_res[2]);
+        console.log(data);
+        cache.set(url,data);
+        dispatch({type:'SET_PROGRESS',payload:100});
+        dispatch({type:'REPO_FULLFILED',payload:data});
       } catch (e) {
         console.error(e);
+        dispatch({type:'SET_ERROR',error:utils.createErrorMsg(response,e)});
         return;
       }
     }
@@ -120,7 +104,5 @@ let resetProgress = () => {
     dispatch({type:'RESET_PROGRESS'});
   }
 }
-
-
 
 export {getUser,getRepos,getRepo,resetProgress};

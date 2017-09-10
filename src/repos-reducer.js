@@ -6,7 +6,7 @@ var initialState = {
 export default (state = (JSON.parse(localStorage.getItem('repos')) || initialState),action) => {
   let newState;
   switch(action.type){
-    case 'REPO_FULLFILED':{
+    case 'REPOS_FULLFILED':{
       if(action.page > 1){
         newState =  {
           data: state.data.concat(action.payload),

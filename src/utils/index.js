@@ -32,6 +32,25 @@ export const roundStars = (stars) => {
   return stars;
 }
 
+export const  getRandomColor = () => {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+export const getPairsArray = (data) => {
+  const keys = Object.keys(data);
+  const values = Object.values(data);
+  const res = [];
+  for(var i in keys){
+    res.push({key:keys[i],value:values[i]})
+  }
+  return res;
+}
+
 export const  capitalize = (string) =>  {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
