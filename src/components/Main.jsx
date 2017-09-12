@@ -66,11 +66,11 @@ class Main extends Component {
     const scrolled = window.innerHeight + window.scrollY;
     const height = document.body.offsetHeight;
     if (scrolled >= height && !progress.loading) {
-      const ratio = repos.data.length/this.context.per_page;
+      const ratio = repos.raw.length/this.context.per_page;
       console.log(ratio);
       if(ratio % 1 == 0){
         const page = Math.floor(ratio) + 1;
-        console.log(`Page ${page}`,repos.data.length,this.context.per_page)
+        console.log(`Page ${page}`,repos.raw.length,this.context.per_page)
         this.getReposWrapper(profile,{page,per_page:this.context.per_page})
       }
     }
