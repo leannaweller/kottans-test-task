@@ -4,11 +4,14 @@ import * as utils from '../../utils';
 import './Select.less';
 
 class Select extends Component {
-    constructor(props){
+    constructor(props,context){
       super(props);
+      const {filter} = context.createProcessingData();
+      const {name} = this.props;
+      const param = filter.find(el => (el.key.toLowerCase() == name.toLowerCase()));
       this.state = {
         open:false,
-        param:'All'
+        param: param ? param.value : 'All'
       }
       this.setFilter = this.setFilter.bind(this);
     }
@@ -32,6 +35,7 @@ class Select extends Component {
     }
     render({params,name},{open,param}){
       let _params = name=='language' ? [...params,'All'] : params;
+      _params = _params.filter(param => (param ? true : false));
       return(
         <div className="select_wrapper">
           <div

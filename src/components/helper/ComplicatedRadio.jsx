@@ -3,10 +3,13 @@ import './ComplicatedRadio.less';
 import * as utils from '../../utils';
 
 class ComplicatedRadio extends Component {
-    constructor(props){
+    constructor(props,context){
       super(props);
+      const {sort} = context.createProcessingData();
+      const {name} = this.props;
+      const param = sort.find(el => (el.key.toLowerCase() == name.toLowerCase()));
       this.state = {
-        current:''
+        current: param ? param.value : ''
       }
     }
     handleChange = (e) => {
