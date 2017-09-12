@@ -20,3 +20,14 @@
 .complicated-checkbox{
   margin-left:20px;
 }
+
+@media (max-width: 767px) {
+  .complicated-checkbox{
+    display: block;
+    margin: 0;
+  }
+  .complicated-checkbox+
+  .complicated-checkbox{
+    margin-left:0;
+  }
+}

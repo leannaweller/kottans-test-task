@@ -7,6 +7,8 @@ const RepoDetails = ({ children,...props }) => {
   const {contributors,langs,name,html_url,parent,prs} = props.selected;
   const _contributors = contributors ? contributors.map(item => {return {key:item.login, value:item.contributions}}) : null;
   const hasLangs = langs && langs.length;
+  const hasPrs = prs && prs.length;
+  const hasContributors = contributors && contributors.length;
   console.log(langs,contributors);
     return(
       <div class="repo-details">
@@ -21,34 +23,40 @@ const RepoDetails = ({ children,...props }) => {
           }
         </div>
         <div className="piecharts">
-          {
-            hasLangs &&
-            <div className="piechart-wrapper">
-                <h4>Languages</h4>
+          <div className="piechart-wrapper">
+              <h4>Languages</h4>
+              {
+                hasLangs ?
                 <CustomPieChart
-                data={langs}/>
-            </div>
-          }
-          {
-            (contributors && contributors.length) &&
-            <div className="piechart-wrapper">
-                <h4>Contributors</h4>
+                data={langs}/>:
+                <h5>Has no langs</h5>
+              }
+          </div>
+          <div className="piechart-wrapper">
+              <h4>Contributors</h4>
+              {
+                hasContributors ?
                 <CustomPieChart
                 data={_contributors}/>
-            </div>
-          }
+              :
+                <h5>Has no contributors</h5>
+              }
+
+          </div>
         </div>
-        {
-          (prs && prs.length) &&
-          <div className="prs">
-            <h4>Pull requests</h4>
+        <div className="prs">
+          <h4>Pull requests</h4>
+          {
+            hasPrs ?
             <ul>
               {
                 prs.map(pr => <li><a href={pr.html_url}>{pr.title}</a></li>)
               }
             </ul>
-          </div>
-        }
+            :
+            <h5>Has no prs</h5>
+          }
+        </div>
       </div>
   );
 }
