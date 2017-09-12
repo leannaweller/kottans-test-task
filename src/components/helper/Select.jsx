@@ -10,22 +10,41 @@ class Select extends Component {
         open:false,
         param:'All'
       }
+      this.setFilter = this.setFilter.bind(this);
+    }
+    setFilter = (param) => {
+      const {modifyFilter} = this.context;
+      const {name} = this.props;
+      if(param != 'All'){
+        modifyFilter(true,name,param);
+      }else{
+        modifyFilter(false,name);
+      }
+    }
+    handleChange = (e) => {
+      const val = e.target.value;
+      this.setState({param:val});
+      this.setFilter(val);
+    }
+    handleClick = (lang) => {
+      this.setState({param:lang,open:false});
+      this.setFilter(lang);
     }
     render({params,name},{open,param}){
       let _params = name=='language' ? [...params,'All'] : params;
       return(
         <div className="select_wrapper">
-          <div tabIndex ="1"
+          <div
             className="select_control"
             onClick={()=>this.setState({open:!open})}>
             <i>{utils.capitalize(name)}:</i> <input value={param}
-              onChange={(e)=>this.setState({param:e.target.value})} type="text"/>
+              onChange={this.handleChange} type="text"/>
             <i className="ion-arrow-down-b"></i>
           </div>
           <div class="select-list" style={{display: (open ? 'block' : 'none')}}>
             <ul>
               {_params.map(lang=><li className={classNames({'active':lang==param})}
-                onClick={()=>this.setState({param:lang,open:false})}>
+            onClick={this.handleClick.bind(null,lang)}>
               {lang}</li>)}
             </ul>
           </div>

@@ -2,8 +2,8 @@ import { h, Component } from 'preact';
 import colors from '../colors.json';
 import Modal from './helper/Modal.jsx';
 import Progress from './helper/Progress.jsx';
+import RepoDetails from './helper/RepoDetails.jsx';
 import moment from 'moment';
-import CustomPieChart from './helper/PieChart.jsx';
 import * as utils from '../utils';
 import './Repo.less';
 
@@ -50,21 +50,10 @@ class Repo extends Component {
           </div>
           <Modal open={isOpen} onClose={() => this.setState({isOpen:false})}>
             {
-              progress.loading ?
+              (progress.loading && !selected.data)?
               <Progress progress={progress}/>
               :
-              <div>
-                <div className="piecharts">
-                  <div className="piechart-wrapper">
-                    <CustomPieChart
-                    data={selected.data ? selected.data.langs : []}/>
-                  </div>
-                  <div className="piechart-wrapper">
-                    <CustomPieChart
-                    data={selected.data ? selected.data.contributors.map(item => {return {key:item.login, value:item.contributions}}) : []}/>
-                  </div>
-                </div>
-              </div>
+              <RepoDetails selected={selected}/>
             }
           </Modal>
         </div>

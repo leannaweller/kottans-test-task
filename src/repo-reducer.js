@@ -3,7 +3,6 @@ var initialState = {
 }
 
 export default (state = (JSON.parse(localStorage.getItem('repo')) || initialState),action) => {
-  console.log(action);
   let newState;
   switch(action.type){
     case 'REPO_FULLFILED':{

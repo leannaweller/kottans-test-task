@@ -8,7 +8,7 @@ class Sorting extends Component {
     return(
       <div class="sorting">
         <ComplicatedRadio name={"sortType"} params={['issues','stars','name','updated']}/>
-        <ComplicatedRadio name={"order"} params={['ascending','descending']}/>
+        <ComplicatedRadio name={"orderBy"} params={['ascending','descending']}/>
       </div>
     );
   }
