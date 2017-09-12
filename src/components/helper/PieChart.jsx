@@ -18,7 +18,7 @@ export default class CustomPieChart extends Component {
     render({data}) {
         const {expandedSector} = this.state
         return (
-            <div>
+            <div class="piechart">
                 <PieChart
                     data={data}
                     expandedSector={expandedSector}
