@@ -1,11 +1,14 @@
 import { h, Component } from 'preact';
 import './ComplicatedCheckbox.less';
 class ComplicatedCheckbox extends Component {
-    constructor(props){
+    constructor(props,context){
       super(props);
+      const {filter} = context.createProcessingData();
+      const {name} = this.props;
+      const param = filter.find(el => (el.key.toLowerCase() == name.toLowerCase()));
       this.state = {
-        input : '',
-        checked:false
+        input : param ? (param.value || '') : '',
+        checked: param ? true : false
       }
     }
     handleChange = (event) => {
@@ -27,27 +30,32 @@ class ComplicatedCheckbox extends Component {
         }else{
           modifyFilter(false,name,true);
         }
+        this.setState({checked: value});
       }else{
         if(checked){
-          modifyFilter(false,name,true);
+          if(inputType && value){
+              modifyFilter(true,name,value);
+          }
+          this.setState({input: value});
         }
-        this.setState({input: value});
       }
     }
-    render({inputType,text},state){
-      let input;
+    render({inputType,text,name},{checked,input}){
+      let _input;
       if(inputType){
         if(inputType == 'date'){
-          input = <input class="super-filter" type="date" onChange={this.handleChange}/>
+          _input = <input class="super-filter" type="date" value={input}
+                    onChange={this.handleChange}/>
         }else{
-          input = <input class="super-filter" type="text" onChange={this.handleChange}/>
+          _input = <input class="super-filter" value={input}  type="text"
+                    onChange={this.handleChange}/>
         }
       }
       return(
         <div class="complicated-checkbox">
-          <input type="checkbox" onChange={this.handleChange}/>
+          <input type="checkbox" checked = {checked} onChange={this.handleChange}/>
           <label htmlFor="">{text}
-          {input}
+          {_input}
           </label>
         </div>
       );

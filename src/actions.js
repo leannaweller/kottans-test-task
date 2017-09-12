@@ -14,17 +14,16 @@ export const getRepos = function(user,{page,per_page},processing){
     dispatch({type:'REPOS_FETCH', page});
     let response;
     let data;
+    let filtered;
     if(!cache.get(url)){
       try {
         response = await fetch(url,{headers:new Headers({'Accept':'application/vnd.github.mercy-preview+json'})});
         dispatch({type:'SET_PROGRESS',payload:10});
         if(response.ok){
           data = await response.json();
-          data = utils.doFilter(data,processing.filter);
+          filtered = utils.doFilter(data,processing.filter);
           dispatch({type:'SET_PROGRESS',payload:60});
           cache.set(url, data, timeout);
-          dispatch({type:'SET_PROGRESS',payload:100});
-          dispatch({type:'REPOS_FULLFILED', payload:data, page});
         }else{
           throw new Error(utils.createErrorMsg(response));
         }
@@ -34,8 +33,12 @@ export const getRepos = function(user,{page,per_page},processing){
         utils.routeTo("/error");
         return;
       }
+    }else{
+      filtered = utils.doFilter(cache.get(url),processing.filter);
     }
-    return cache.get(url);
+    dispatch({type:'SET_PROGRESS',payload:100});
+    dispatch({type:'REPOS_FULLFILED', payload:filtered, page});
+    return filtered;
   }
 }
 

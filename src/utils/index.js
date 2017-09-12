@@ -1,5 +1,6 @@
 import {route} from 'preact-router';
 import  _ from 'lodash';
+import moment from 'moment';
 
 export const createErrorMsg = (response,error) => {
   let _error = response ? response.statusText : 'Big error';
@@ -40,10 +41,9 @@ export const merge = (arr1,arr2) => {
 
 export const getFilterParams = (matches) => {
   let pairs = getPairsArray(matches);
-  const filters = ['language','type','openissues','hastopics','staredgte','updatedafter'];
+  const filters = ['language','type','openissues','hastopics','starredgte','updatedafter'];
   pairs = pairs.map(pair => {return {...pair,key:pair.key.toLowerCase()}});
   pairs = pairs.filter(pair => filters.includes(pair.key));
-  console.log(pairs);
   return pairs;
 }
 
@@ -100,8 +100,8 @@ export const filter = (key,value,repos) => {
     case 'hastopics':{
       return repos.filter(repo => repo.topics);
     }
-    case 'staredgte':{
-      return repos.filter(repo => (parseInt(repo.stargazers_count) > value));
+    case 'starredgte':{
+      return repos.filter(repo => (repo.stargazers_count >= parseInt(value)));
     }
     case 'updatedafter':{
       return repos.filter(repo => (new Date(repo.updated_at) > new Date(value)));
@@ -114,18 +114,19 @@ export const filter = (key,value,repos) => {
 
 export const sort = (type,order,repos) =>{
   let factor = (order == 'ascending') ? 1 : -1;
-  switch (key) {
+  console.log(type,order);
+  switch (type) {
     case 'issues':{
-      _.sortBy(repos, 'open_issues_count');
+      return _.sortBy(repos, 'open_issues_count');
     }
     case 'stars':{
-      _.sortBy(repos, 'stargazers_count');
+      return _.sortBy(repos, 'stargazers_count');
     }
     case 'name':{
-      _.sortBy(repos, 'name');
+      return _.sortBy(repos, 'name');
     }
-    case 'name':{
-      _.sortBy(repos, 'updated_at');
+    case 'updated':{
+      return _.sortBy(repos, 'updated_at');
     }
     default:{
       return repos;
@@ -139,4 +140,37 @@ export const doFilter = (repos,filters) => {
     repos = filter(f.key,f.value,repos);
   }
   return repos;
+}
+
+export const validateFilter = (filter) => {
+  let valid = true;
+  for(let f of filter){
+    if(f.key.toLowerCase() == 'starredgte'){
+      if(parseInt(f.value) < 0){
+        valid = false;
+      }
+    }
+    if(f.key.toLowerCase() == 'updatedafter'){
+      const date = moment(f.value);
+      if(date == 'Invalid date'){
+        console.log('Invalid date',f.value);
+        valid = false;
+      }
+    }
+  }
+  return valid;
+}
+
+export const validateSort = (sort) => {
+  const type = sort.find(el => (el.key == 'sorttype'));
+  const order = sort.find(el => (el.key == 'orderby'));
+  if(!type && !order){
+    return true;
+  }else{
+    if(type && order){
+      return true;
+    }else{
+      return false;
+    }
+  }
 }

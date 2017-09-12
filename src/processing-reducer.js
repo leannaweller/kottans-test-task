@@ -9,19 +9,17 @@ export default (state = initialState,action) => {
   switch(action.type){
     case 'MODIFY_FILTER': {
       newState = {...state};
+      newState.filter = newState.filter.filter(item => (item.key.toLowerCase() != action.key.toLowerCase()));
       if(action.set){
-        newState.filter = [...state.filter,{key,value}];
-      }else{
-        newState.filter = newState.filter.filter(item => item.key != action.key);
+        newState.filter = [...newState.filter,{key,value}];
       }
       break;
     }
     case 'MODIFY_SORT': {
       newState = {...state};
+      newState.sort = newState.sort.filter(item => (item.key.toLowerCase() != action.key.toLowerCase()));
       if(action.set){
-        newState.sort = [...state.sort,{key,value}];
-      }else{
-        newState.sort = newState.sort.filter(item => item.key != action.key);
+        newState.sort = [...newState.sort,{key,value}];
       }
       break;
     }

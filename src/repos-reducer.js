@@ -10,7 +10,7 @@ export default (state = (JSON.parse(localStorage.getItem('repos')) || initialSta
       if(action.page > 1){
         newState =  {
           data: state.data.concat(action.payload),
-          page
+          page:action.page
         }
       }else{
         newState =  {
