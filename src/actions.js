@@ -9,35 +9,47 @@ const timeout =  60000;
 export const getRepos = function(user,{page,per_page},processing){
   return async function (dispatch){
     console.log(processing);
-    let url =  `https://api.github.com/users/${user}/repos?page=${page}&per_page=${per_page}`;
+    const getUrl = (page = page)=> {
+      return `https://api.github.com/users/${user}/repos?page=${page}&per_page=${per_page}`;
+    }
+    let url = getUrl();
     dispatch({type:'SET_PROGRESS',payload:0});
     dispatch({type:'REPOS_FETCH', page});
     let response;
-    let data;
-    let filtered;
-    if(!cache.get(url)){
-      try {
-        response = await fetch(url,{headers:new Headers({'Accept':'application/vnd.github.mercy-preview+json'})});
-        dispatch({type:'SET_PROGRESS',payload:10});
+    let data = cache.get(url) ?  cache.get(url) : [];
+    let buf;
+    let filtered = [];
+    try {
+      let _page = page;
+      dispatch({type:'SET_PROGRESS',payload:10});
+      while(filtered.length < per_page){
+        const current_url = getUrl(_page);
+        response = await fetch(current_url,{headers:new Headers({'Accept':'application/vnd.github.mercy-preview+json'})});
         if(response.ok){
-          data = await response.json();
+          buf = await response.json();
+          data.push(...buf);
           filtered = utils.doFilter(data,processing.filter);
-          dispatch({type:'SET_PROGRESS',payload:60});
-          cache.set(url, data, timeout);
         }else{
           throw new Error(utils.createErrorMsg(response));
+          break;
         }
-      } catch (e) {
-        console.error(e);
-        dispatch({type:'SET_ERROR',error:utils.createErrorMsg(response,e)});
-        utils.routeTo("/error");
-        return;
+        console.log('GET DATA',current_url,buf);
+        if(!buf.length){
+          break;
+        }
+        _page++;
       }
-    }else{
-      filtered = utils.doFilter(cache.get(url),processing.filter);
+      dispatch({type:'SET_PROGRESS',payload:60});
+      console.log('data',data);
+      cache.set(url, data, timeout);
+    } catch (e) {
+      console.error(e);
+      dispatch({type:'SET_ERROR',error:utils.createErrorMsg(response,e)});
+      utils.routeTo("/error");
+      return;
     }
     dispatch({type:'SET_PROGRESS',payload:100});
-    dispatch({type:'REPOS_FULLFILED', payload:filtered, page});
+    dispatch({type:'REPOS_FULLFILED', payload:filtered, raw:data,page});
     return filtered;
   }
 }
