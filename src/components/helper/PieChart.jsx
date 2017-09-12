@@ -3,13 +3,11 @@ import {getRandomColor} from '../../utils';
 import PieChart from "react-svg-piechart"
 
 export default class CustomPieChart extends Component {
-    constructor() {
-        super()
-
+    constructor(props) {
+        super(props);
         this.state = {
             expandedSector: null,
         }
-
         this.handleMouseEnterOnSector = this.handleMouseEnterOnSector.bind(this)
     }
 
@@ -19,7 +17,6 @@ export default class CustomPieChart extends Component {
 
     render({data}) {
         const {expandedSector} = this.state
-        console.log(data);
         return (
             <div>
                 <PieChart

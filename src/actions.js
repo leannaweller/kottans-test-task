@@ -6,18 +6,21 @@ const timeout =  60000;
 
 
 
-let getRepos = function(user,{page,per_page}){
+export const getRepos = function(user,{page,per_page},processing){
   return async function (dispatch){
+    console.log(processing);
     let url =  `https://api.github.com/users/${user}/repos?page=${page}&per_page=${per_page}`;
     dispatch({type:'SET_PROGRESS',payload:0});
     dispatch({type:'REPOS_FETCH', page});
     let response;
+    let data;
     if(!cache.get(url)){
       try {
         response = await fetch(url,{headers:new Headers({'Accept':'application/vnd.github.mercy-preview+json'})});
         dispatch({type:'SET_PROGRESS',payload:10});
         if(response.ok){
-          let data = await response.json();
+          data = await response.json();
+          data = utils.doFilter(data,processing.filter);
           dispatch({type:'SET_PROGRESS',payload:60});
           cache.set(url, data, timeout);
           dispatch({type:'SET_PROGRESS',payload:100});
@@ -36,7 +39,7 @@ let getRepos = function(user,{page,per_page}){
   }
 }
 
-let getUser = function(user){
+export const getUser = function(user){
   return async function(dispatch){
     dispatch({type:'SET_PROGRESS',payload:0});
     dispatch({type:'USER_FETCH'});
@@ -67,7 +70,7 @@ let getUser = function(user){
 };
 
 
-let getRepo = function(owner,repo){
+export const getRepo = function(owner,repo){
   return async function(dispatch){
     dispatch({type:'SET_PROGRESS',payload:0});
     dispatch({type:'REPO_FETCH'});
@@ -78,13 +81,14 @@ let getRepo = function(owner,repo){
     let data = {};
     if(!cache.get(url)){
       try {
-        const promises = [fetch(contributors_url),fetch(prs_url),fetch(langs_url)];
+        const promises = [fetch(url),fetch(contributors_url),fetch(prs_url),fetch(langs_url)];
         const results = await Promise.all(promises);
         dispatch({type:'SET_PROGRESS',payload:50});
         const total_res = await Promise.all(results.map(res => res.json()));
-        data.contributors = total_res[0];
-        data.prs = total_res[1];
-        data.langs = utils.getPairsArray(total_res[2]);
+        data = total_res[0];
+        data.contributors = total_res[1];
+        data.prs = total_res[2];
+        data.langs = utils.getPairsArray(total_res[3]);
         console.log(data);
         cache.set(url,data);
         dispatch({type:'SET_PROGRESS',payload:100});
@@ -99,10 +103,26 @@ let getRepo = function(owner,repo){
   }
 };
 
-let resetProgress = () => {
+export const resetProgress = () => {
   return (dispatch) => {
     dispatch({type:'RESET_PROGRESS'});
   }
 }
 
-export {getUser,getRepos,getRepo,resetProgress};
+export const modifyFilter = (set,key,value) => {
+  return (dispatch) => {
+    dispatch({type:'MODIFY_FILTER',key,value,set});
+  }
+}
+
+export const modifySort = (set,key,value) => {
+  return (dispatch) => {
+    dispatch({type:'MODIFY_SORT',key,value,set});
+  }
+}
+
+export const setAll = (payload) => {
+  return (dispatch) => {
+    dispatch({type:'SET_ALL', payload});
+  }
+}
