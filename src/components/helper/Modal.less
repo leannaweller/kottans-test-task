@@ -10,15 +10,13 @@
     background-color: rgba(0,0,0,0.45);
 }
 
-
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 40%;
 }
-
 
 .close {
     color: #aaa;
@@ -32,4 +30,10 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .modal-content{
+    width: 90%;
+  }
 }

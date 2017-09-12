@@ -50,10 +50,10 @@ class Repo extends Component {
           </div>
           <Modal open={isOpen} onClose={() => this.setState({isOpen:false})}>
             {
-              (progress.loading && !selected.data)?
+              (!selected.data) ?
               <Progress progress={progress}/>
               :
-              <RepoDetails selected={selected}/>
+              <RepoDetails selected={selected.data}/>
             }
           </Modal>
         </div>

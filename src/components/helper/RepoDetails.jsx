@@ -4,34 +4,51 @@ import CustomPieChart from './PieChart.jsx';
 import './RepoDetails.less';
 
 const RepoDetails = ({ children,...props }) => {
-  const {selected} = props;
-  const contributors = (selected.data && selected.data.contributors) ? selected.data.contributors.map(item => {return {key:item.login, value:item.contributions}}) : [];
+  const {contributors,langs,name,html_url,parent,prs} = props.selected;
+  const _contributors = contributors ? contributors.map(item => {return {key:item.login, value:item.contributions}}) : null;
+  const hasLangs = langs && langs.length;
+  console.log(langs,contributors);
     return(
       <div class="repo-details">
-        Repo:<a href={selected.data && selected.data.html_url}>{selected.data && selected.data.name}</a>
+        <h3>{name}</h3>
+        <div className="repo-links">
+          <strong>Repo:</strong> <a href={html_url}>{name}</a>
+          {
+            parent &&
+            <div>
+              <strong>Fork:</strong> <a href={parent.html_url}>{parent.name}</a>
+            </div>
+          }
+        </div>
+        <div className="piecharts">
+          {
+            hasLangs &&
+            <div className="piechart-wrapper">
+                <h4>Languages</h4>
+                <CustomPieChart
+                data={langs}/>
+            </div>
+          }
+          {
+            (contributors && contributors.length) &&
+            <div className="piechart-wrapper">
+                <h4>Contributors</h4>
+                <CustomPieChart
+                data={_contributors}/>
+            </div>
+          }
+        </div>
         {
-          (selected.data && selected.data.parent) &&
-          <div>
-            Fork: <a href={selected.data.parent.html_url}>{selected.data.parent.name}</a>
+          (prs && prs.length) &&
+          <div className="prs">
+            <h4>Pull requests</h4>
+            <ul>
+              {
+                prs.map(pr => <li><a href={pr.html_url}>{pr.title}</a></li>)
+              }
+            </ul>
           </div>
         }
-        <div className="piecharts">
-          <div className="piechart-wrapper">
-            <CustomPieChart
-            data={selected.data ? selected.data.langs : []}/>
-          </div>
-          <div className="piechart-wrapper">
-            <CustomPieChart
-            data={contributors}/>
-          </div>
-        </div>
-        <div className="prs">
-          <ul>
-            {
-              selected.data && selected.data.prs.map(pr => <li><a href={pr.html_url}>{pr.title}</a></li>)
-            }
-          </ul>
-        </div>
       </div>
   );
 }
