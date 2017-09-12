@@ -13,7 +13,9 @@ class Header extends Component {
       <main>
         <div className="home-content">
           <h3 class="epic-text">Enter user name or organization and enjoy!</h3>
-          <Search opacity={props.opacity} color={props.color} handleSubmit = {props.handleSubmit}/>
+          <div>
+            <Search opacity={props.opacity} color={props.color} handleSubmit = {props.handleSubmit}/>
+          </div>
         </div>
       </main>
   );
